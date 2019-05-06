@@ -1,20 +1,20 @@
 {
   "development": {
-    "username": "teresaknowles",
+    "username": "",
     "password": null,
     "database": "calorie_tracker_development",
     "host": "127.0.0.1",
     "dialect": "postgres"
   },
   "test": {
-    "username": "teresaknowles",
+    "username": "",
     "password": null,
     "database": "calorie_tracker_test",
     "host": "127.0.0.1",
     "dialect": "postgres"
   },
   "production": {
-    "username": "teresaknowles",
+    "username": "",
     "password": null,
     "database": "calorie_tracker_production",
     "host": "127.0.0.1",
