@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "test": "nyc jest --passWithNoTests --watch"
+    "test": "nyc jest --passWithNoTests --watch --forceExit"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
