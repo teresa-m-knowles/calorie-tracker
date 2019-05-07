@@ -21,7 +21,11 @@ describe('api', () => {
       })
     });
     test('should return an array of foods', () => {
-
+      return request(app).get('/api/v1/foods').then(response => {
+        expect(response.body.length).toBe(2),
+        expect(Object.keys(response.body[0])).toContain('name'),
+        expect(Object.keys(response.body[0])).toContain('calories')
+      })
     });
   })
 });
