@@ -1,13 +1,13 @@
 {
   "development": {
-    "username": "",
+    "username": "postgres",
     "password": null,
     "database": "calorie_tracker_development",
     "host": "127.0.0.1",
     "dialect": "postgres"
   },
   "test": {
-    "username": "",
+    "username": "postgres",
     "password": null,
     "database": "calorie_tracker_test",
     "host": "127.0.0.1",
