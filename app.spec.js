@@ -61,5 +61,13 @@ describe('api', () => {
         expect(response.body.calories).toBe(40);
       })
     });
+
+    test('returns a 400 is info is missing', () => {
+      const body = {
+      }
+      return request(app).post("/api/v1/foods").send(body).then(response => {
+        expect(response.status).toBe(400);
+      })
+    });
   });
 });
