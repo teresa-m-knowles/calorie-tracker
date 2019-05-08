@@ -18,7 +18,11 @@ router.get("/:id", function(req, res) {
   Food.findByPk(req.params.id)
     .then(foodItem => {
       res.setHeader("Content-Type", "application/json");
-      res.status(200).send(JSON.stringify(foodItem));
+      if(foodItem){
+        res.status(200).send(JSON.stringify(foodItem));
+      } else {
+        res.sendStatus(400);
+      }
     })
     .catch(error => {
       res.setHeader("Content-Type", "application/json");
