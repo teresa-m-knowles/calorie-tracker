@@ -83,7 +83,7 @@ describe('api', () => {
 
     test('the item no longer exists and the you cannot delete an item that does not exist', () => {
       return request(app).delete("/api/v1/foods/1").then(response => {
-        expect(response.status).toBe(404)
+        expect(response.status).toBe(404);
       })
     });
   });
