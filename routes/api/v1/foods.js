@@ -1,5 +1,6 @@
 var express = require("express");
 var router = express.Router();
+var pry = require("pryjs");
 var Food = require("../../../models").Food;
 
 router.get("/", function (req, res) {
@@ -48,12 +49,37 @@ router.post("/", function(req, res) {
   };
 });
 
+router.delete("/:id", function(req, res, next) {
+  checkIfFoodExists(req.params.id).then(food => {
+    if (food !== null) {
+      food.destroy()
+        .then(food => {
+          res.setHeader("Content-Type", "application/json");
+          res.sendStatus(204);
+        })
+        .catch(error => {
+          res.setHeader("Content-Type", "application/json");
+          res.status(500).send({ error });
+        });
+    } else {
+      res.setHeader("Content-Type", "application/json");
+      res.sendStatus(404);
+    }
+  });
+});
+
 function checkValidBody(req_body) {
   if (req_body.food && req_body.food.name && req_body.food.calories) {
     return (typeof req_body.food.calories === "number")
   } else {
     return false
   }
+};
+
+function checkIfFoodExists(id) {
+  return Food.findByPk(id).then(food => {
+    return food
+  })
 };
 
 module.exports = router;
