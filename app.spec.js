@@ -71,6 +71,18 @@ describe('api', () => {
         expect(response.body.calories).toBe(40);
       })
     });
+
+    test('returns a 400 is info is missing', () => {
+      const body = {
+        food: {
+          name: "name",
+          calories: "hslafjkhjfakl"
+        }
+      }
+      return request(app).post("/api/v1/foods").send(body).then(response => {
+        expect(response.status).toBe(400);
+      })
+    });
   });
   describe('Update food item path', () => {
     test('should return a 200 status', () => {
