@@ -5,12 +5,11 @@ var app = require('./app');
 describe('api', () => {
   beforeAll(() => {
     shell.exec('npx sequelize db:create')
-  });
-  beforeEach(() => {
     shell.exec('npx sequelize db:migrate')
     shell.exec('npx sequelize db:seed:all')
   });
-  afterEach(() => {
+  afterAll(() => {
+    shell.exec('npx sequelize db:seed:undo:all')
     shell.exec('npx sequelize db:migrate:undo:all')
   });
 
@@ -71,6 +70,20 @@ describe('api', () => {
       }
       return request(app).post("/api/v1/foods").send(body).then(response => {
         expect(response.status).toBe(400);
+      })
+    });
+  });
+
+  describe('Create delete item path', () => {
+    test('should return a 204 status', () => {
+      return request(app).delete("/api/v1/foods/1").then(response => {
+        expect(response.status).toBe(204);
+      })
+    });
+
+    test('the item no longer exists and the you cannot delete an item that does not exist', () => {
+      return request(app).delete("/api/v1/foods/1").then(response => {
+        expect(response.status).toBe(404)
       })
     });
   });
