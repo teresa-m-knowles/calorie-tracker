@@ -17,11 +17,10 @@ router.get("/", function (req, res) {
 router.get("/:id", function(req, res) {
   Food.findByPk(req.params.id)
     .then(foodItem => {
-      res.setHeader("Content-Type", "application/json");
-      res.status(200).send(JSON.stringify(foodItem));
+      res.setHeader("Content-Type", "application/json")
+      foodItem ? res.status(200).send(JSON.stringify(foodItem)) : res.sendStatus(404);
     })
     .catch(error => {
-      res.setHeader("Content-Type", "application/json");
       res.status(500).send({ error })
     });
 })
@@ -46,6 +45,29 @@ router.post("/", function(req, res) {
     res.setHeader("Content-Type", "application/json");
     res.status(400).send(JSON.stringify("Invalid request format"));
   };
+});
+
+router.patch("/:id", function(req, res) {
+  Food.update(
+    {
+      name: req.body.food.name,
+      calories: req.body.food.calories
+    },
+    {
+      returning: true,
+      where: {
+        id: req.params.id
+      }
+    }
+  )
+    .then(([rowsUpdate, [updatedFood]]) => {
+      res.setHeader("Content-Type", "application/json");
+      res.status(200).send(JSON.stringify(updatedFood));
+    })
+    .catch(error => {
+      res.status(500).send({ error })
+    });
+
 });
 
 function checkValidBody(req_body) {
