@@ -18,11 +18,10 @@ router.get("/", function (req, res) {
 router.get("/:id", function(req, res) {
   Food.findByPk(req.params.id)
     .then(foodItem => {
-      res.setHeader("Content-Type", "application/json");
-      res.status(200).send(JSON.stringify(foodItem));
+      res.setHeader("Content-Type", "application/json")
+      foodItem ? res.status(200).send(JSON.stringify(foodItem)) : res.sendStatus(404);
     })
     .catch(error => {
-      res.setHeader("Content-Type", "application/json");
       res.status(500).send({ error })
     });
 })
@@ -66,6 +65,37 @@ router.delete("/:id", function(req, res, next) {
       res.sendStatus(404);
     }
   });
+});
+
+router.patch("/:id", function(req, res) {
+  if(checkValidBody(req.body)) {
+    Food.update(
+      {
+        name: req.body.food.name,
+        calories: req.body.food.calories
+      },
+      {
+        returning: true,
+        where: {
+          id: req.params.id
+        }
+      }
+    )
+      .then(([rowsUpdate, [updatedFood]]) => {
+        if(updatedFood){
+          res.setHeader("Content-Type", "application/json");
+          res.status(200).send(JSON.stringify(updatedFood));
+        } else{
+          res.status(400).send(JSON.stringify(`No food with id of ${req.params.id} was found in the database`))
+        }
+      })
+      .catch(error => {
+        res.status(500).send({ error })
+      });
+  } else{
+      res.setHeader("Content-Type", "application/json");
+      res.status(400).send(JSON.stringify("Invalid request format"));
+  }
 });
 
 function checkValidBody(req_body) {
