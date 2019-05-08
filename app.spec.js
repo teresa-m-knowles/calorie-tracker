@@ -4,6 +4,8 @@ var app = require('./app');
 
 describe('api', () => {
   beforeAll(() => {
+    shell.exec('npx sequelize db:seed:undo:all')
+    shell.exec('npx sequelize db:migrate:undo:all')
     shell.exec('npx sequelize db:create')
     shell.exec('npx sequelize db:migrate')
     shell.exec('npx sequelize db:seed:all')
@@ -43,7 +45,7 @@ describe('api', () => {
         expect(response.body.calories).toBe(14);
       })
     });
-    
+
     describe('When the food item does not exist', () => {
       test('should return a 404 status', () => {
         return request(app).get("/api/v1/foods/43").then(response => {
@@ -82,7 +84,7 @@ describe('api', () => {
       })
     });
   });
-  
+
   describe('Update food item path', () => {
     test('should return a 200 status', () => {
       //Change banana from 150 calories (from seed) to 40
