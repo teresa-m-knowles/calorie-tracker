@@ -62,4 +62,36 @@ describe('api', () => {
       })
     });
   });
+  describe('Update food item path', () => {
+    test('should return a 200 status', () => {
+      //Change banana from 150 calories (from seed) to 40
+      const body = {
+        food: {
+          name: "Banana",
+          calories: 40
+        }
+      }
+
+      return request(app).patch("/api/v1/foods/1").send(body).then(response => {
+        expect(response.status).toBe(200);
+      })
+
+
+    });
+    test('should update the food item and return it', () => {
+      const body = {
+        food: {
+          name: "Banana",
+          calories: 40
+        }
+      }
+
+      return request(app).patch("/api/v1/foods/1").send(body).then(response => {
+        expect(response.body.id).toBe(1);
+        expect(response.body.name).toBe("Banana");
+        expect(response.body.calories).toBe(40);
+      })
+
+    })
+  });
 });
