@@ -38,7 +38,7 @@ describe('api', () => {
 
     test('should return one food item', () => {
       return request(app).get("/api/v1/foods/2").then(response => {
-        console.log(response.body)
+        expect(response.header["content-type"]).toContain("application/json");
         expect(response.body.id).toBe(2);
         expect(response.body.name).toBe('Mint');
         expect(response.body.calories).toBe(14);
@@ -49,7 +49,7 @@ describe('api', () => {
       test('should return a 404 status', () => {
         return request(app).get("/api/v1/foods/43").then(response => {
           expect(response.status).toBe(404);
-          expect(response.body).toBe(undefined);
+          expect(response.body).toEqual({});
         })
       })
     })
