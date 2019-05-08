@@ -50,11 +50,7 @@ router.post("/", function(req, res) {
 
 function checkValidBody(req_body) {
   if (req_body.food && req_body.food.name && req_body.food.calories) {
-    if (typeof req_body.food.calories === "number") {
-      return true
-    } else {
-      return false
-    }
+    return (typeof req_body.food.calories === "number")
   } else {
     return false
   }
