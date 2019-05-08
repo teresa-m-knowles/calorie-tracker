@@ -110,8 +110,8 @@ describe('api', () => {
             calories: 40
           }
         }
-        return request(app).path("/api/v1/foods/1").send(body).then(response => {
-          expect(response.status).toBe(404)
+        return request(app).patch("/api/v1/foods/1").send(body).then(response => {
+          expect(response.status).toBe(400)
         })
       })
     })
