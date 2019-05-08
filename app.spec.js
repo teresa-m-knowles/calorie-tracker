@@ -42,18 +42,17 @@ describe('api', () => {
         expect(response.body.name).toBe('Mint');
         expect(response.body.calories).toBe(14);
       })
-    })
-  });
-
+    });
+    
     describe('When the food item does not exist', () => {
       test('should return a 404 status', () => {
         return request(app).get("/api/v1/foods/43").then(response => {
           expect(response.status).toBe(404);
           expect(response.body).toEqual({});
         })
-      })
-    })
-
+      });
+    });
+  });
 
   describe('Create food item path', () => {
     test('should return a 201 status and the created food item', () => {
@@ -138,7 +137,7 @@ describe('api', () => {
         return request(app).patch("/api/v1/foods/1").send(body).then(response => {
           expect(response.status).toBe(400)
         })
-      })
-    })
+      });
+    });
   });
 });
