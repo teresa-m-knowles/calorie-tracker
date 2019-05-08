@@ -5,12 +5,11 @@ var app = require('./app');
 describe('api', () => {
   beforeAll(() => {
     shell.exec('npx sequelize db:create')
-  });
-  beforeEach(() => {
     shell.exec('npx sequelize db:migrate')
     shell.exec('npx sequelize db:seed:all')
   });
-  afterEach(() => {
+  afterAll(() => {
+    shell.exec('npx sequelize db:seed:undo:all')
     shell.exec('npx sequelize db:migrate:undo:all')
   });
 
@@ -43,18 +42,17 @@ describe('api', () => {
         expect(response.body.name).toBe('Mint');
         expect(response.body.calories).toBe(14);
       })
-    })
-  });
-
+    });
+    
     describe('When the food item does not exist', () => {
       test('should return a 404 status', () => {
         return request(app).get("/api/v1/foods/43").then(response => {
           expect(response.status).toBe(404);
           expect(response.body).toEqual({});
         })
-      })
-    })
-
+      });
+    });
+  });
 
   describe('Create food item path', () => {
     test('should return a 201 status and the created food item', () => {
@@ -84,6 +82,7 @@ describe('api', () => {
       })
     });
   });
+  
   describe('Update food item path', () => {
     test('should return a 200 status', () => {
       //Change banana from 150 calories (from seed) to 40
@@ -97,7 +96,6 @@ describe('api', () => {
       return request(app).patch("/api/v1/foods/1").send(body).then(response => {
         expect(response.status).toBe(200);
       })
-
 
     });
     test('should update the food item and return it', () => {
@@ -125,8 +123,21 @@ describe('api', () => {
         return request(app).patch("/api/v1/foods/1").send(body).then(response => {
           expect(response.status).toBe(400)
         })
-      })
-    })
+      });
+    });
   });
 
+  describe('Create delete item path', () => {
+    test('should return a 204 status', () => {
+      return request(app).delete("/api/v1/foods/1").then(response => {
+        expect(response.status).toBe(204);
+      })
+    });
+
+    test('the item no longer exists and the you cannot delete an item that does not exist', () => {
+      return request(app).delete("/api/v1/foods/1").then(response => {
+        expect(response.status).toBe(404);
+      })
+    });
+  });
 });
