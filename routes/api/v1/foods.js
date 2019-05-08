@@ -42,4 +42,27 @@ router.post("/", function(req, res) {
     });
 });
 
+router.patch("/:id", function(req, res) {
+  Food.update(
+    {
+      name: req.body.food.name,
+      calories: req.body.food.calories
+    },
+    {
+      returning: true,
+      where: {
+        id: req.params.id
+      }
+    }
+  )
+    .then(([rowsUpdate, [updatedFood]]) => {
+      res.setHeader("Content-Type", "application/json");
+      res.status(200).send(JSON.stringify(updatedFood));
+    })
+    .catch(error => {
+      res.status(500).send({ error })
+    });
+
+});
+
 module.exports = router;
