@@ -45,6 +45,15 @@ describe('api', () => {
       })
     })
 
+    describe('When the food item does not exist', () => {
+      test('should return a 404 status', () => {
+        return request(app).get("/api/v1/foods/43").then(response => {
+          expect(response.status).toBe(404);
+          expect(response.body).toBe(undefined);
+        })
+      })
+    })
+
 
   });
 });
