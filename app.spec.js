@@ -82,21 +82,7 @@ describe('api', () => {
       })
     });
   });
-
-  describe('Create delete item path', () => {
-    test('should return a 204 status', () => {
-      return request(app).delete("/api/v1/foods/1").then(response => {
-        expect(response.status).toBe(204);
-      })
-    });
-
-    test('the item no longer exists and the you cannot delete an item that does not exist', () => {
-      return request(app).delete("/api/v1/foods/1").then(response => {
-        expect(response.status).toBe(404);
-      })
-    });
-  });
-
+  
   describe('Update food item path', () => {
     test('should return a 200 status', () => {
       //Change banana from 150 calories (from seed) to 40
@@ -138,6 +124,20 @@ describe('api', () => {
           expect(response.status).toBe(400)
         })
       });
+    });
+  });
+
+  describe('Create delete item path', () => {
+    test('should return a 204 status', () => {
+      return request(app).delete("/api/v1/foods/1").then(response => {
+        expect(response.status).toBe(204);
+      })
+    });
+
+    test('the item no longer exists and the you cannot delete an item that does not exist', () => {
+      return request(app).delete("/api/v1/foods/1").then(response => {
+        expect(response.status).toBe(404);
+      })
     });
   });
 });
