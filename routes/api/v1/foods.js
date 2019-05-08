@@ -17,15 +17,10 @@ router.get("/", function (req, res) {
 router.get("/:id", function(req, res) {
   Food.findByPk(req.params.id)
     .then(foodItem => {
-      res.setHeader("Content-Type", "application/json");
-      if(foodItem){
-        res.status(200).send(JSON.stringify(foodItem));
-      } else {
-        res.sendStatus(400);
-      }
+      res.setHeader("Content-Type", "application/json")
+      foodItem ? res.status(200).send(JSON.stringify(foodItem)) : res.sendStatus(404);
     })
     .catch(error => {
-      res.setHeader("Content-Type", "application/json");
       res.status(500).send({ error })
     });
 })
