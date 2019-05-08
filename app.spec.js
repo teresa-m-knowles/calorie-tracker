@@ -102,6 +102,19 @@ describe('api', () => {
         expect(response.body.calories).toBe(40);
       })
 
+    });
+    describe('when the request body is invalid (no calories or no name for food)', () => {
+      test('should return a 400 status', () => {
+        const body = {
+          food: {
+            calories: 40
+          }
+        }
+        return request(app).path("/api/v1/foods/1").send(body).then(response => {
+          expect(response.status).toBe(404)
+        })
+      })
     })
   });
+
 });
