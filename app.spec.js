@@ -44,7 +44,22 @@ describe('api', () => {
         expect(response.body.calories).toBe(14);
       })
     })
+  });
 
-
+  describe('Create food item path', () => {
+    test('should return a 201 status and the created food item', () => {
+      const body = {
+        food: {
+          name: "Apple",
+          calories: 40
+        }
+      }
+      return request(app).post("/api/v1/foods").send(body).then(response => {
+        expect(response.status).toBe(201);
+        expect(Object.keys(response.body)).toContain('id');
+        expect(response.body.name).toBe('Apple');
+        expect(response.body.calories).toBe(40);
+      })
+    });
   });
 });

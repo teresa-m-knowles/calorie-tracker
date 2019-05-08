@@ -26,4 +26,21 @@ router.get("/:id", function(req, res) {
     });
 })
 
+router.post("/", function(req, res) {
+  Food.create(
+    {
+      name: req.body.food.name,
+      calories: req.body.food.calories
+    }
+  )
+    .then(foodItem => {
+      res.setHeader("Content-Type", "application/json");
+      res.status(201).send(JSON.stringify(foodItem));
+    })
+    .catch(error => {
+      res.setHeader("Content-Type", "application/json");
+      res.status(500).send({ error });
+    });
+});
+
 module.exports = router;
