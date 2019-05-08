@@ -27,20 +27,37 @@ router.get("/:id", function(req, res) {
 })
 
 router.post("/", function(req, res) {
-  Food.create(
-    {
-      name: req.body.food.name,
-      calories: req.body.food.calories
-    }
-  )
-    .then(foodItem => {
-      res.setHeader("Content-Type", "application/json");
-      res.status(201).send(JSON.stringify(foodItem));
-    })
-    .catch(error => {
-      res.setHeader("Content-Type", "application/json");
-      res.status(500).send({ error });
-    });
+  if (checkValidBody(req.body)) {
+    Food.create(
+      {
+        name: req.body.food.name,
+        calories: req.body.food.calories
+      }
+    )
+      .then(foodItem => {
+        res.setHeader("Content-Type", "application/json");
+        res.status(201).send(JSON.stringify(foodItem));
+      })
+      .catch(error => {
+        res.setHeader("Content-Type", "application/json");
+        res.status(500).send({ error });
+      });
+  } else {
+    res.setHeader("Content-Type", "application/json");
+    res.status(400).send(JSON.stringify("Invalid request format"));
+  };
 });
+
+function checkValidBody(req_body) {
+  if (req_body.food && req_body.food.name && req_body.food.calories) {
+    if (typeof req_body.food.calories === "number") {
+      return true
+    } else {
+      return false
+    }
+  } else {
+    return false
+  }
+};
 
 module.exports = router;
