@@ -56,8 +56,12 @@ router.patch("/:id", function(req, res) {
     }
   )
     .then(([rowsUpdate, [updatedFood]]) => {
-      res.setHeader("Content-Type", "application/json");
-      res.status(200).send(JSON.stringify(updatedFood));
+      if(updatedFood){
+        res.setHeader("Content-Type", "application/json");
+        res.status(200).send(JSON.stringify(updatedFood));
+      } else{
+        res.status(400).send(JSON.stringify(`No food with id of ${req.params.id} was found in the database`))
+      }
     })
     .catch(error => {
       res.status(500).send({ error })
