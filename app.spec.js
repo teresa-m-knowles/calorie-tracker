@@ -27,5 +27,24 @@ describe('api', () => {
         expect(Object.keys(response.body[0])).toContain('calories')
       })
     });
-  })
+  });
+
+  describe('Single food item path', () => {
+    test('should return a 200 status', () => {
+      return request(app).get("/api/v1/foods/2").then(response => {
+        expect(response.status).toBe(200)
+      })
+    });
+
+    test('should return one food item', () => {
+      return request(app).get("/api/v1/foods/2").then(response => {
+        console.log(response.body)
+        expect(response.body.id).toBe(2);
+        expect(response.body.name).toBe('Mint');
+        expect(response.body.calories).toBe(14);
+      })
+    })
+
+
+  });
 });

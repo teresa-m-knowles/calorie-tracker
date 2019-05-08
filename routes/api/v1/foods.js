@@ -14,4 +14,16 @@ router.get("/", function (req, res) {
     });
 });
 
+router.get("/:id", function(req, res) {
+  Food.findByPk(req.params.id)
+    .then(foodItem => {
+      res.setHeader("Content-Type", "application/json");
+      res.status(200).send(JSON.stringify(foodItem));
+    })
+    .catch(error => {
+      res.setHeader("Content-Type", "application/json");
+      res.status(500).send({ error })
+    });
+})
+
 module.exports = router;
