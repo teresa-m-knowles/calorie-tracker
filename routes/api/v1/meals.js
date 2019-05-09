@@ -13,12 +13,10 @@ router.get("/:id/foods", function (req, res, next) {
     }]
   })
     .then(meal => {
-      console.log(meal)
       res.setHeader("Content-Type", "application/json");
       res.status(200).send(JSON.stringify(meal));
     })
     .catch(error => {
-      console.log(error)
       res.setHeader("Content-Type", "application/json");
       res.status(500).send({ error })
     });
