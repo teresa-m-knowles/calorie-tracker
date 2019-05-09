@@ -156,5 +156,11 @@ describe('api', () => {
         expect(Object.keys(response.body.foods[0])).toContain("calories");
       })
     });
+
+    test('should return a 404 if the meal does not exist', () => {
+      return request(app).get("/api/v1/meals/8/foods").then(response => {
+        expect(response.status).toBe(404);
+      })
+    });
   });
 });
