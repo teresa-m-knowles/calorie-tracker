@@ -7,9 +7,11 @@ var Food = require("../../../models").Food;
 router.get("/:id/foods", function (req, res, next) {
   Meal.findOne({
     where: {id: req.params.id},
+    attributes: ['id', 'name'],
     include: [{
       model: Food,
-      as: 'foods'
+      as: 'foods',
+      attributes: ['id', 'name', 'calories']
     }]
   })
     .then(meal => {
