@@ -15,8 +15,13 @@ router.get("/:id/foods", function (req, res, next) {
     }]
   })
     .then(meal => {
-      res.setHeader("Content-Type", "application/json");
-      res.status(200).send(JSON.stringify(meal));
+      if (meal !== null) {
+        res.setHeader("Content-Type", "application/json");
+        res.status(200).send(JSON.stringify(meal));
+      } else {
+        res.setHeader("Content-Type", "application/json");
+        res.sendStatus(404);
+      }
     })
     .catch(error => {
       res.setHeader("Content-Type", "application/json");
