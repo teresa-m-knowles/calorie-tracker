@@ -140,4 +140,21 @@ describe('api', () => {
       })
     });
   });
+
+  describe('Get all foods for one meal', () => {
+    test('should return a 200 status', () => {
+      return request(app).get("/api/v1/meals/1/foods").then(response => {
+        expect(response.status).toBe(200);
+      })
+    });
+
+    test('should return a name and an array of food objects', () => {
+      return request(app).get("/api/v1/meals/1/foods").then(response => {
+        expect(Object.keys(response.body)).toContain('name');
+        expect(response.body.foods.length).toBe(2);
+        expect(Object.keys(response.body.foods[0])).toContain("name");
+        expect(Object.keys(response.body.foods[0])).toContain("calories");
+      })
+    });
+  });
 });
