@@ -57,6 +57,7 @@ router.delete("/:id", function(req, res, next) {
           res.sendStatus(204);
         })
         .catch(error => {
+          console.log(error)
           res.setHeader("Content-Type", "application/json");
           res.status(500).send({ error });
         });
