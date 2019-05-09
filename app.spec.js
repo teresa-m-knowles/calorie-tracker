@@ -2,7 +2,7 @@ var shell = require('shelljs');
 var request = require("supertest");
 var app = require('./app');
 
-describe('api', () => {
+describe('Food endpoints API', () => {
   beforeAll(() => {
     shell.exec('npx sequelize db:create')
     shell.exec('npx sequelize db:migrate')
@@ -140,6 +140,20 @@ describe('api', () => {
       })
     });
   });
+});
+
+describe("Meal endpoints API", () => {
+  beforeEach(() => {
+    shell.exec('npx sequelize db:create');
+    shell.exec('npx sequelize db:migrate:undo:all');
+    shell.exec('npx sequelize db:migrate');
+    shell.exec('npx sequelize db:seed:undo:all');
+    shell.exec('npx sequelize db:seed:all');
+  });
+  afterAll(() => {
+    shell.exec('npx sequelize db:seed:undo:all')
+    shell.exec('npx sequelize db:migrate:undo:all')
+  });
 
   describe('Meals index path', () => {
     test('should return a 200 status', () => {
@@ -171,7 +185,7 @@ describe('api', () => {
     test('should return a name and an array of food objects', () => {
       return request(app).get("/api/v1/meals/1/foods").then(response => {
         expect(Object.keys(response.body)).toContain('name');
-        expect(response.body.foods.length).toBe(2);
+        expect(response.body.foods.length).toBe(3);
         expect(Object.keys(response.body.foods[0])).toContain("name");
         expect(Object.keys(response.body.foods[0])).toContain("calories");
       })
@@ -181,6 +195,35 @@ describe('api', () => {
       return request(app).get("/api/v1/meals/8/foods").then(response => {
         expect(response.status).toBe(404);
       })
+    });
+  });
+
+  describe('Delete Food from Meal path', () => {
+    test('should return a 204 status', () => {
+      // Delete Chicken Burrito from Dinner
+      return request(app).delete("/api/v1/meals/4/foods/7")
+        .then(response => {
+          expect(response.status).toBe(204);
+        })
+    });
+
+    test('should return a 404 status if the Food is not associated with that meal', () => {
+      return request(app).delete("/api/v1/meals/1/foods/7")
+        .then(response => {
+          expect(response.status).toBe(404);
+        })
+    });
+    test('should return a 404 status if the Food does not exist', () => {
+      return request(app).delete("/api/v1/meals/4/foods/999")
+        .then(response => {
+          expect(response.status).toBe(404);
+        })
+    });
+    test('should return a 404 status if the Meal does not exist', () => {
+      return request(app).delete("/api/v1/meals/999/foods/1")
+        .then(response => {
+          expect(response.status).toBe(404);
+        })
     });
   });
 

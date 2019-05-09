@@ -58,6 +58,38 @@ router.get("/:id/foods", function (req, res, next) {
     });
 });
 
+// DELETE a Food from a Meal
+router.delete("/:mealId/foods/:foodId", function(req, res){
+  MealFood.findOne({
+    where: {
+      MealId: req.params.mealId,
+      FoodId: req.params.foodId
+    }
+  })
+    .then(mealFood => {
+      if (mealFood) {
+        mealFood.destroy()
+          .then(destroyedRows => {
+            res.setHeader("Content-Type", "application/json");
+            res.sendStatus(204);
+          })
+          .catch(error => {
+            res.setHeader("Content-Type", "application/json");
+            res.status(500).send({ error });
+          })
+
+      } else {
+        res.setHeader("Content-Type", "application/json");
+        res.sendStatus(404);
+      }
+    })
+    .catch(error => {
+      console.log(error)
+      res.setHeader("Content-Type", "application/json");
+      res.status(500).send({ error });
+    });
+});
+
 router.post("/:id/foods/:food_id", function (req, res, next) {
   Meal.findByPk(req.params.id)
     .then(meal => {
