@@ -190,6 +190,18 @@ describe('api', () => {
         expect(response.status).toBe(201);
         expect(response.body.message).toBe("Successfully added Yogurt to Lunch");
       })
-    })
+    });
+
+    test('Will return a 404 without a valid meal', () => {
+      return request(app).post("/api/v1/meals/89/foods/3").then(response => {
+        expect(response.status).toBe(404);
+      })
+    });
+
+    test('Will return a 404 without a valid food', () => {
+      return request(app).post("/api/v1/meals/3/foods/98").then(response => {
+        expect(response.status).toBe(404);
+      })
+    });
   });
 });
