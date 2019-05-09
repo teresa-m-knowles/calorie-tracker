@@ -206,5 +206,24 @@ describe("Meal endpoints API", () => {
           expect(response.status).toBe(204);
         })
     });
+
+    test('should return a 404 status if the Food is not associated with that meal', () => {
+      return request(app).delete("/api/v1/meals/1/foods/7")
+        .then(response => {
+          expect(response.status).toBe(404);
+        })
+    });
+    test('should return a 404 status if the Food does not exist', () => {
+      return request(app).delete("/api/v1/meals/4/foods/999")
+        .then(response => {
+          expect(response.status).toBe(404);
+        })
+    });
+    test('should return a 404 status if the Meal does not exist', () => {
+      return request(app).delete("/api/v1/meals/999/foods/1")
+        .then(response => {
+          expect(response.status).toBe(404);
+        })
+    });
   });
 })
