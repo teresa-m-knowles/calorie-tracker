@@ -59,4 +59,20 @@ router.get("/:id/foods", function (req, res, next) {
     });
 });
 
+router.post("/:id/foods/:food_id", function (req, res, next) {
+  Meal.findByPk(req.params.id)
+    .then(meal => {
+      Food.findByPk(req.params.food_id)
+        .then(food => {
+          meal.addFood(food);
+          res.setHeader("Content-Type", "application/json");
+          res.status(201).send({message: `Successfully added ${food.name} to ${meal.name}`});
+        })
+    })
+    .catch(error => {
+      res.setHeader("Content-Type", "application/json");
+      res.status(500).send({ error })
+    });
+});
+
 module.exports = router;

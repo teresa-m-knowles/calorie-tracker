@@ -183,4 +183,13 @@ describe('api', () => {
       })
     });
   });
+
+  describe('Associate a food item to a meal', () => {
+    test('should return a 201 status and a message', () => {
+      return request(app).post("/api/v1/meals/3/foods/3").then(response => {
+        expect(response.status).toBe(201);
+        expect(response.body.message).toBe("Successfully added Yogurt to Lunch");
+      })
+    })
+  });
 });
