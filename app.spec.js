@@ -151,7 +151,7 @@ describe('api', () => {
     test('should return a name and an array of food objects', () => {
       return request(app).get("/api/v1/meals/1/foods").then(response => {
         expect(Object.keys(response.body)).toContain('name');
-        expect(response.body.foods.length).toBe(3);
+        expect(response.body.foods.length).toBe(2);
         expect(Object.keys(response.body.foods[0])).toContain("name");
         expect(Object.keys(response.body.foods[0])).toContain("calories");
       })
