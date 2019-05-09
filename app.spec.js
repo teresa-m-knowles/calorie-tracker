@@ -140,4 +140,24 @@ describe('api', () => {
       })
     });
   });
+
+  describe('Meals index path', () => {
+    test('should return a 200 status', () => {
+      return request(app).get('/api/v1/meals').then(response => {
+        expect(response.status).toBe(200)
+      })
+    });
+
+    test('should return an array of meals and their foods', () => {
+      return request(app).get('/api/v1/meals')
+      .then(response => {
+        const lunch = response.body[2];
+        expect(response.body.length).toBe(4);
+        expect(lunch.name).toBe('Lunch');
+        expect(lunch).toHaveProperty('foods');
+        expect(lunch.foods[0].name).toBe('Bagel Bites - Four Cheese');
+        expect(lunch.foods[0].calories).toBe(650);
+      })
+    })
+  });
 });
