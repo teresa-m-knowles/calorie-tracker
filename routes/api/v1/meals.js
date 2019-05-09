@@ -68,7 +68,6 @@ router.delete("/:mealId/foods/:foodId", function(req, res){
     }
   })
     .then(mealFood => {
-      console.log(mealFood)
       if (mealFood) {
         mealFood.destroy()
           .then(destroyedRows => {
