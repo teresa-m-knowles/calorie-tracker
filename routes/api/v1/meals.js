@@ -8,7 +8,6 @@ var MealFood = require("../../../models").MealFood;
 // GET all Meals and their associated Foods
 router.get("/", function(req, res) {
   Meal.findAll({
-
   include: [
     {
     model: Food,
@@ -32,30 +31,15 @@ router.get("/", function(req, res) {
 
 // GET a single Meal and its Foods
 router.get("/:id/foods", function (req, res, next) {
-  Meal.findOne({
-    where: {id: req.params.id},
-    attributes: ['id', 'name'],
-    include: [{
-      model: Food,
-      as: 'foods',
-      attributes: ['id', 'name', 'calories'],
-      through: {
-         attributes: []
-              }
-    }]
-  })
+  res.setHeader("Content-Type", "application/json");
+
+  Meal.findMeal(req.params.id)
     .then(meal => {
-      if (meal !== null) {
-        res.setHeader("Content-Type", "application/json");
-        res.status(200).send(JSON.stringify(meal));
-      } else {
-        fourOhFour(res);
-      }
+      res.status(200).send(JSON.stringify(meal));
     })
     .catch(error => {
-      res.setHeader("Content-Type", "application/json");
-      res.status(500).send({ error })
-    });
+      res.status(404).send(error)
+    })
 });
 
 // DELETE a Food from a Meal
