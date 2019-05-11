@@ -21,5 +21,28 @@ module.exports = (sequelize, DataTypes) => {
         });
     })
   };
+
+  Food.updateFood = function(req) {
+    let errorMessage = `No food with id of ${req.params.id} was found in the database`
+    return new Promise((resolve, reject) => {
+      Food.update(
+        {
+          name: req.body.food.name,
+          calories: req.body.food.calories
+        },
+        {
+          returning: true,
+          where: {
+            id: req.params.id
+          }
+        }
+      )
+      .then(([rowsUpdate, [updatedFood]]) => {
+        updatedFood ? resolve(updatedFood) : reject({error: errorMessage})
+      })
+    })
+
+  };
+
   return Food;
 };

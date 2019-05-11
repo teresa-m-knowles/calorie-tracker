@@ -66,7 +66,7 @@ router.delete("/:id", function(req, res) {
 router.patch("/:id", function(req, res) {
   checkValidBody(req.body)
     .then(reqBody => {
-      return updateFood(req)
+      return Food.updateFood(req)
     })
     .then(updatedFood => {
       res.setHeader("Content-Type", "application/json");
@@ -76,27 +76,6 @@ router.patch("/:id", function(req, res) {
       res.status(400).send(error)
     })
     });
-
-function updateFood(validRequest) {
-  let errorMessage = `No food with id of ${validRequest.params.id} was found in the database`
-  return new Promise((resolve, reject) => {
-    Food.update(
-      {
-        name: validRequest.body.food.name,
-        calories: validRequest.body.food.calories
-      },
-      {
-        returning: true,
-        where: {
-          id: validRequest.params.id
-        }
-      }
-    )
-    .then(([rowsUpdate, [updatedFood]]) => {
-      updatedFood ? resolve(updatedFood) : reject({error: errorMessage})
-    })
-  })
-}
 
 function checkValidBody(reqBody) {
   return new Promise((resolve, reject) => {
