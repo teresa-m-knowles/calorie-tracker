@@ -43,34 +43,15 @@ router.get("/:id/foods", function (req, res, next) {
 
 // DELETE a Food from a Meal
 router.delete("/:mealId/foods/:foodId", function(req, res){
-  MealFood.findOne({
-    where: {
-      MealId: req.params.mealId,
-      FoodId: req.params.foodId
-    }
-  })
-    .then(mealFood => {
-      if (mealFood) {
-        mealFood.destroy()
-          .then(destroyedRows => {
-            res.setHeader("Content-Type", "application/json");
-            res.sendStatus(204);
-          })
-          .catch(error => {
-            res.setHeader("Content-Type", "application/json");
-            res.status(500).send({ error });
-          })
+  res.setHeader("Content-Type", "application/json");
 
-      } else {
-        res.setHeader("Content-Type", "application/json");
-        res.sendStatus(404);
-      }
+  MealFood.deleteFood(req)
+    .then(response => {
+      res.sendStatus(204)
     })
     .catch(error => {
-      console.log(error)
-      res.setHeader("Content-Type", "application/json");
-      res.status(500).send({ error });
-    });
+      res.status(404).send(error)
+    })
 });
 
 router.post("/:id/foods/:food_id", function (req, res, next) {
