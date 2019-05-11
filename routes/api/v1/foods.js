@@ -47,7 +47,7 @@ router.post("/", function(req, res) {
     });
 });
 
-router.delete("/:id", function(req, res, next) {
+router.delete("/:id", function(req, res) {
   res.setHeader("Content-Type", "application/json");
 
   Food.findFood(req.params.id)
@@ -76,7 +76,6 @@ router.patch("/:id", function(req, res) {
       res.status(400).send(error)
     })
     });
-
 
 function updateFood(validRequest) {
   let errorMessage = `No food with id of ${validRequest.params.id} was found in the database`
@@ -108,12 +107,5 @@ function checkValidBody(reqBody) {
     }
   })
 }
-
-
-function checkIfFoodExists(id) {
-  return Food.findByPk(id).then(food => {
-    return food
-  })
-};
 
 module.exports = router;
