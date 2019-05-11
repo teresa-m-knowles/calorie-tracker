@@ -22,7 +22,7 @@ router.get("/:id", function(req, res) {
       res.status(200).send(JSON.stringify(foodItem))
     })
     .catch(error => {
-      res.sendStatus(404)
+      res.status(404).send(error)
     });
 })
 
@@ -43,32 +43,9 @@ router.post("/", function(req, res) {
       created ? res.status(201).send(JSON.stringify(food)) : res.status(200).send(JSON.stringify(food))
     })
     .catch(error => {
-      console.log(error);
       res.status(400).send(error);
     });
 });
-
-//
-//   if (checkValidBody(req.body)) {
-//     Food.create(
-//       {
-//         name: req.body.food.name,
-//         calories: req.body.food.calories
-//       }
-//     )
-//       .then(foodItem => {
-//         res.setHeader("Content-Type", "application/json");
-//         res.status(201).send(JSON.stringify(foodItem));
-//       })
-//       .catch(error => {
-//         res.setHeader("Content-Type", "application/json");
-//         res.status(500).send({ error });
-//       });
-//   } else {
-//     res.setHeader("Content-Type", "application/json");
-//     res.status(400).send(JSON.stringify("Invalid request format"));
-//   };
-// });
 
 router.delete("/:id", function(req, res, next) {
   res.setHeader("Content-Type", "application/json");
