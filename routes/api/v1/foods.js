@@ -71,63 +71,38 @@ router.delete("/:id", function(req, res, next) {
 router.patch("/:id", function(req, res) {
   checkValidBody(req.body)
     .then(reqBody => {
-      return Food.update(
-        {
-          name: reqBody.food.name,
-          calories: reqBody.food.calories
-        },
-        {
-          returning: true,
-          where: {
-            id: req.params.id
-          }
-        }
-      )
+      return updateFood(req)
     })
-    .then(([rowsUpdate, [updatedFood]]) => {
-      if (updatedFood) {
-        res.setHeader("Content-Type", "application/json");
-        res.status(200).send(JSON.stringify(updatedFood));
-      } else {
-        res.status(400).send(JSON.stringify(`No food with id of ${req.params.id} was found in the database`))
-      }
+    .then(updatedFood => {
+      res.setHeader("Content-Type", "application/json");
+      res.status(200).send(JSON.stringify(updatedFood));
     })
     .catch(error => {
-      res.status(500).send({ error })
+      res.status(400).send(error)
+    })
     });
-    });
 
 
-
-//   if(checkValidBody(req.body)) {
-//     Food.update(
-//       {
-//         name: req.body.food.name,
-//         calories: req.body.food.calories
-//       },
-//       {
-//         returning: true,
-//         where: {
-//           id: req.params.id
-//         }
-//       }
-//     )
-//       .then(([rowsUpdate, [updatedFood]]) => {
-//         if(updatedFood){
-//           res.setHeader("Content-Type", "application/json");
-//           res.status(200).send(JSON.stringify(updatedFood));
-//         } else{
-//           res.status(400).send(JSON.stringify(`No food with id of ${req.params.id} was found in the database`))
-//         }
-//       })
-//       .catch(error => {
-//         res.status(500).send({ error })
-//       });
-//   } else{
-//       res.setHeader("Content-Type", "application/json");
-//       res.status(400).send(JSON.stringify("Invalid request format"));
-//   }
-// });
+function updateFood(validRequest) {
+  let errorMessage = `No food with id of ${validRequest.params.id} was found in the database`
+  return new Promise((resolve, reject) => {
+    Food.update(
+      {
+        name: validRequest.body.food.name,
+        calories: validRequest.body.food.calories
+      },
+      {
+        returning: true,
+        where: {
+          id: validRequest.params.id
+        }
+      }
+    )
+    .then(([rowsUpdate, [updatedFood]]) => {
+      updatedFood ? resolve(updatedFood) : reject({error: errorMessage})
+    })
+  })
+}
 
 function checkValidBody(reqBody) {
   return new Promise((resolve, reject) => {
@@ -138,15 +113,6 @@ function checkValidBody(reqBody) {
     }
   })
 }
-
-//
-// function checkValidBody(req_body) {
-//   if (req_body.food && req_body.food.name && req_body.food.calories) {
-//     return (typeof req_body.food.calories === "number")
-//   } else {
-//     return false
-//   }
-// };
 
 function checkIfFoodExists(id) {
   return Food.findByPk(id).then(food => {
