@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
           if (foodItem){
             resolve(foodItem);
           } else{
-            reject();
+            reject({error: `No food with id of ${id} found in the database.`});
           }
         });
     })

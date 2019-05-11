@@ -49,23 +49,19 @@ router.post("/", function(req, res) {
 });
 
 router.delete("/:id", function(req, res, next) {
-  checkIfFoodExists(req.params.id).then(food => {
-    if (food !== null) {
-      food.destroy()
-        .then(food => {
-          res.setHeader("Content-Type", "application/json");
-          res.sendStatus(204);
-        })
-        .catch(error => {
-          console.log(error)
-          res.setHeader("Content-Type", "application/json");
-          res.status(500).send({ error });
-        });
-    } else {
-      res.setHeader("Content-Type", "application/json");
-      res.sendStatus(404);
-    }
-  });
+  res.setHeader("Content-Type", "application/json");
+
+  Food.findFood(req.params.id)
+    .then(food => {
+      return food.destroy();
+    })
+    .then(destroyedFood => {
+      res.sendStatus(204);
+    })
+    .catch(error => {
+      res.status(404).send(error)
+    })
+
 });
 
 router.patch("/:id", function(req, res) {
@@ -111,6 +107,15 @@ function checkValidBody(reqBody) {
     } else {
       reject({error: "Invalid request format"})
     }
+  })
+}
+
+function checkIfFoodExists(id) {
+  return new Promise((resolve, reject) => {
+    Food.findByPk(id)
+      .then(food => {
+        food ? resolve(food) : reject({error: ""})
+      })
   })
 }
 
