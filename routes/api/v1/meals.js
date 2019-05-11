@@ -7,6 +7,8 @@ var MealFood = require("../../../models").MealFood;
 
 // GET all Meals and their associated Foods
 router.get("/", function(req, res) {
+  res.setHeader("Content-Type", "application/json");
+
   Meal.findAll({
   include: [
     {
@@ -19,12 +21,9 @@ router.get("/", function(req, res) {
     }]
   })
     .then(meals => {
-      res.setHeader("Content-Type", "application/json");
       res.status(200).send(JSON.stringify(meals));
     })
     .catch(error => {
-      console.log(error)
-      res.setHeader("Content-Type", "application/json");
       res.status(500).send({ error })
     });
 });
