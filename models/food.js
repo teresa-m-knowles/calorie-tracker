@@ -44,5 +44,22 @@ module.exports = (sequelize, DataTypes) => {
 
   };
 
+  Food.createFood = function(req) {
+    return new Promise ((resolve, reject) => {
+      Food.findOrCreate({
+        attributes: ['id', 'name', 'calories'],
+        where: {
+          name: req.body.food.name,
+          calories: req.body.food.calories
+        }
+      })
+
+      .then(([food, created]) => {
+        created ? resolve(food) : reject({error: `${food.name} is already in the database`})
+      })
+
+    })
+  }
+
   return Food;
 };

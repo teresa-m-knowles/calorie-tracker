@@ -30,21 +30,15 @@ router.post("/", function(req, res) {
   res.setHeader("Content-Type", "application/json");
 
   checkValidBody(req.body)
-    .then(reqBody => {
-      return Food.findOrCreate({
-        attributes: ['id', 'name', 'calories'],
-        where: {
-          name: req.body.food.name,
-          calories: req.body.food.calories
-        }
-      })
-      })
-    .then(([food, created]) => {
-      created ? res.status(201).send(JSON.stringify(food)) : res.status(200).send(JSON.stringify(food))
+    .then(body => {
+      return Food.createFood(req)
+    })
+    .then(food => {
+      res.status(201).send(JSON.stringify(food))
     })
     .catch(error => {
       res.status(400).send(error);
-    });
+    })
 });
 
 router.delete("/:id", function(req, res) {
