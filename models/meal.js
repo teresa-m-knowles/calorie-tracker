@@ -26,8 +26,11 @@ module.exports = (sequelize, DataTypes) => {
         }]
       })
       .then(meal => {
-        console.log(meal)
-        meal ? resolve(meal) : reject({error: `No meal with id of ${id} found in the database.`})
+        if (meal) {
+          resolve(meal)
+        } else{
+          reject({error: `No meal with id of ${id} found in the database.`})
+        }
       })
     })
   }
