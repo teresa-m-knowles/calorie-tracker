@@ -48,7 +48,7 @@ describe('Food endpoints API', () => {
       test('should return a 404 status', () => {
         return request(app).get("/api/v1/foods/43").then(response => {
           expect(response.status).toBe(404);
-          expect(response.body).toEqual({});
+          expect(response.body).toEqual({"error": "No food with id of 43 found in the database."});
         })
       });
     });

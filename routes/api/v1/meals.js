@@ -54,28 +54,25 @@ router.delete("/:mealId/foods/:foodId", function(req, res){
     })
 });
 
-router.post("/:id/foods/:food_id", function (req, res, next) {
-  Meal.findByPk(req.params.id)
+router.post("/:id/foods/:foodId", function (req, res, next) {
+  res.setHeader("Content-Type", "application/json");
+  let foundMeal, foundFood;
+
+  Meal.findMeal(req.params.id)
     .then(meal => {
-      if (meal !== null) {
-        Food.findByPk(req.params.food_id)
-          .then(food => {
-            if (food !== null) {
-              meal.addFood(food);
-              res.setHeader("Content-Type", "application/json");
-              res.status(201).send({message: `Successfully added ${food.name} to ${meal.name}`});
-            } else {
-              fourOhFour(res);
-            }
-          })
-      } else {
-        fourOhFour(res);
-      }
+      foundMeal = meal
+      return Food.findFood(req.params.foodId)
     })
+    .then(food => {
+      foundFood = food;
+      return foundMeal.addFood(foundFood)
+    })
+    .then(mealFood => {
+      res.status(201).send({message: `Successfully added ${foundFood.name} to ${foundMeal.name}`});
+      })
     .catch(error => {
-      res.setHeader("Content-Type", "application/json");
-      res.status(500).send({ error })
-    });
+      res.status(404).send(error)
+    })
 });
 
 function fourOhFour(res) {
