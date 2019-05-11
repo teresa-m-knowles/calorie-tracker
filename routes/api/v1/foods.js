@@ -27,26 +27,48 @@ router.get("/:id", function(req, res) {
 })
 
 router.post("/", function(req, res) {
-  if (checkValidBody(req.body)) {
-    Food.create(
-      {
-        name: req.body.food.name,
-        calories: req.body.food.calories
-      }
-    )
-      .then(foodItem => {
-        res.setHeader("Content-Type", "application/json");
-        res.status(201).send(JSON.stringify(foodItem));
+  res.setHeader("Content-Type", "application/json");
+
+  checkValidBody(req.body)
+    .then(reqBody => {
+      return Food.findOrCreate({
+        attributes: ['id', 'name', 'calories'],
+        where: {
+          name: req.body.food.name,
+          calories: req.body.food.calories
+        }
       })
-      .catch(error => {
-        res.setHeader("Content-Type", "application/json");
-        res.status(500).send({ error });
-      });
-  } else {
-    res.setHeader("Content-Type", "application/json");
-    res.status(400).send(JSON.stringify("Invalid request format"));
-  };
+      })
+    .then(([food, created]) => {
+      created ? res.status(201).send(JSON.stringify(food)) : res.status(200).send(JSON.stringify(food))
+    })
+    .catch(error => {
+      console.log(error);
+      res.status(400).send(error);
+    });
 });
+
+//
+//   if (checkValidBody(req.body)) {
+//     Food.create(
+//       {
+//         name: req.body.food.name,
+//         calories: req.body.food.calories
+//       }
+//     )
+//       .then(foodItem => {
+//         res.setHeader("Content-Type", "application/json");
+//         res.status(201).send(JSON.stringify(foodItem));
+//       })
+//       .catch(error => {
+//         res.setHeader("Content-Type", "application/json");
+//         res.status(500).send({ error });
+//       });
+//   } else {
+//     res.setHeader("Content-Type", "application/json");
+//     res.status(400).send(JSON.stringify("Invalid request format"));
+//   };
+// });
 
 router.delete("/:id", function(req, res, next) {
   res.setHeader("Content-Type", "application/json");
@@ -110,14 +132,6 @@ function checkValidBody(reqBody) {
   })
 }
 
-function checkIfFoodExists(id) {
-  return new Promise((resolve, reject) => {
-    Food.findByPk(id)
-      .then(food => {
-        food ? resolve(food) : reject({error: ""})
-      })
-  })
-}
 
 function checkIfFoodExists(id) {
   return Food.findByPk(id).then(food => {
