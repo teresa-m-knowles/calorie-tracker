@@ -7,8 +7,9 @@ var MealFood = require("../../../models").MealFood;
 
 // GET all Meals and their associated Foods
 router.get("/", function(req, res) {
-  Meal.findAll({
+  res.setHeader("Content-Type", "application/json");
 
+  Meal.findAll({
   include: [
     {
     model: Food,
@@ -20,98 +21,58 @@ router.get("/", function(req, res) {
     }]
   })
     .then(meals => {
-      res.setHeader("Content-Type", "application/json");
       res.status(200).send(JSON.stringify(meals));
     })
     .catch(error => {
-      console.log(error)
-      res.setHeader("Content-Type", "application/json");
       res.status(500).send({ error })
     });
 });
 
 // GET a single Meal and its Foods
 router.get("/:id/foods", function (req, res, next) {
-  Meal.findOne({
-    where: {id: req.params.id},
-    attributes: ['id', 'name'],
-    include: [{
-      model: Food,
-      as: 'foods',
-      attributes: ['id', 'name', 'calories'],
-      through: {
-         attributes: []
-              }
-    }]
-  })
+  res.setHeader("Content-Type", "application/json");
+
+  Meal.findMeal(req.params.id)
     .then(meal => {
-      if (meal !== null) {
-        res.setHeader("Content-Type", "application/json");
-        res.status(200).send(JSON.stringify(meal));
-      } else {
-        fourOhFour(res);
-      }
+      res.status(200).send(JSON.stringify(meal));
     })
     .catch(error => {
-      res.setHeader("Content-Type", "application/json");
-      res.status(500).send({ error })
-    });
+      res.status(404).send(error)
+    })
 });
 
 // DELETE a Food from a Meal
 router.delete("/:mealId/foods/:foodId", function(req, res){
-  MealFood.findOne({
-    where: {
-      MealId: req.params.mealId,
-      FoodId: req.params.foodId
-    }
-  })
-    .then(mealFood => {
-      if (mealFood) {
-        mealFood.destroy()
-          .then(destroyedRows => {
-            res.setHeader("Content-Type", "application/json");
-            res.sendStatus(204);
-          })
-          .catch(error => {
-            res.setHeader("Content-Type", "application/json");
-            res.status(500).send({ error });
-          })
+  res.setHeader("Content-Type", "application/json");
 
-      } else {
-        res.setHeader("Content-Type", "application/json");
-        res.sendStatus(404);
-      }
+  MealFood.deleteFood(req)
+    .then(response => {
+      res.sendStatus(204)
     })
     .catch(error => {
-      console.log(error)
-      res.setHeader("Content-Type", "application/json");
-      res.status(500).send({ error });
-    });
+      res.status(404).send(error)
+    })
 });
 
-router.post("/:id/foods/:food_id", function (req, res, next) {
-  Meal.findByPk(req.params.id)
+router.post("/:id/foods/:foodId", function (req, res, next) {
+  res.setHeader("Content-Type", "application/json");
+  let foundMeal, foundFood;
+
+  Meal.findMeal(req.params.id)
     .then(meal => {
-      if (meal !== null) {
-        Food.findByPk(req.params.food_id)
-          .then(food => {
-            if (food !== null) {
-              meal.addFood(food);
-              res.setHeader("Content-Type", "application/json");
-              res.status(201).send({message: `Successfully added ${food.name} to ${meal.name}`});
-            } else {
-              fourOhFour(res);
-            }
-          })
-      } else {
-        fourOhFour(res);
-      }
+      foundMeal = meal
+      return Food.findFood(req.params.foodId)
     })
+    .then(food => {
+      foundFood = food;
+      return foundMeal.addFood(foundFood)
+    })
+    .then(mealFood => {
+      res.status(201).send({message: `Successfully added ${foundFood.name} to ${foundMeal.name}`});
+      })
     .catch(error => {
-      res.setHeader("Content-Type", "application/json");
-      res.status(500).send({ error })
-    });
+      res.status(404).send(error)
+    })
 });
 
 function fourOhFour(res) {

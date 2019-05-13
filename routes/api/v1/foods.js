@@ -4,113 +4,81 @@ var pry = require("pryjs");
 var Food = require("../../../models").Food;
 
 router.get("/", function (req, res) {
+  res.setHeader("Content-Type", "application/json");
   Food.findAll()
     .then(foods => {
-      res.setHeader("Content-Type", "application/json");
       res.status(200).send(JSON.stringify(foods));
     })
     .catch(error => {
-      res.setHeader("Content-Type", "application/json");
       res.status(500).send({ error })
     });
 });
 
 router.get("/:id", function(req, res) {
-  Food.findByPk(req.params.id)
+  res.setHeader("Content-Type", "application/json");
+
+  Food.findFood(req.params.id)
     .then(foodItem => {
-      res.setHeader("Content-Type", "application/json")
-      foodItem ? res.status(200).send(JSON.stringify(foodItem)) : res.sendStatus(404);
+      res.status(200).send(JSON.stringify(foodItem))
     })
     .catch(error => {
-      res.status(500).send({ error })
+      res.status(404).send(error)
     });
 })
 
 router.post("/", function(req, res) {
-  if (checkValidBody(req.body)) {
-    Food.create(
-      {
-        name: req.body.food.name,
-        calories: req.body.food.calories
-      }
-    )
-      .then(foodItem => {
-        res.setHeader("Content-Type", "application/json");
-        res.status(201).send(JSON.stringify(foodItem));
-      })
-      .catch(error => {
-        res.setHeader("Content-Type", "application/json");
-        res.status(500).send({ error });
-      });
-  } else {
-    res.setHeader("Content-Type", "application/json");
-    res.status(400).send(JSON.stringify("Invalid request format"));
-  };
+  res.setHeader("Content-Type", "application/json");
+
+  checkValidBody(req.body)
+    .then(body => {
+      return Food.createFood(req)
+    })
+    .then(food => {
+      res.status(201).send(JSON.stringify(food))
+    })
+    .catch(error => {
+      res.status(400).send(error);
+    })
 });
 
-router.delete("/:id", function(req, res, next) {
-  checkIfFoodExists(req.params.id).then(food => {
-    if (food !== null) {
-      food.destroy()
-        .then(food => {
-          res.setHeader("Content-Type", "application/json");
-          res.sendStatus(204);
-        })
-        .catch(error => {
-          console.log(error)
-          res.setHeader("Content-Type", "application/json");
-          res.status(500).send({ error });
-        });
-    } else {
-      res.setHeader("Content-Type", "application/json");
-      res.sendStatus(404);
-    }
-  });
+router.delete("/:id", function(req, res) {
+  res.setHeader("Content-Type", "application/json");
+
+  Food.findFood(req.params.id)
+    .then(food => {
+      return food.destroy();
+    })
+    .then(destroyedFood => {
+      res.sendStatus(204);
+    })
+    .catch(error => {
+      res.status(404).send(error)
+    })
+
 });
 
 router.patch("/:id", function(req, res) {
-  if(checkValidBody(req.body)) {
-    Food.update(
-      {
-        name: req.body.food.name,
-        calories: req.body.food.calories
-      },
-      {
-        returning: true,
-        where: {
-          id: req.params.id
-        }
-      }
-    )
-      .then(([rowsUpdate, [updatedFood]]) => {
-        if(updatedFood){
-          res.setHeader("Content-Type", "application/json");
-          res.status(200).send(JSON.stringify(updatedFood));
-        } else{
-          res.status(400).send(JSON.stringify(`No food with id of ${req.params.id} was found in the database`))
-        }
-      })
-      .catch(error => {
-        res.status(500).send({ error })
-      });
-  } else{
+  checkValidBody(req.body)
+    .then(reqBody => {
+      return Food.updateFood(req)
+    })
+    .then(updatedFood => {
       res.setHeader("Content-Type", "application/json");
-      res.status(400).send(JSON.stringify("Invalid request format"));
-  }
-});
+      res.status(200).send(JSON.stringify(updatedFood));
+    })
+    .catch(error => {
+      res.status(400).send(error)
+    })
+    });
 
-function checkValidBody(req_body) {
-  if (req_body.food && req_body.food.name && req_body.food.calories) {
-    return (typeof req_body.food.calories === "number")
-  } else {
-    return false
-  }
-};
-
-function checkIfFoodExists(id) {
-  return Food.findByPk(id).then(food => {
-    return food
+function checkValidBody(reqBody) {
+  return new Promise((resolve, reject) => {
+    if (reqBody.food && reqBody.food.name && reqBody.food.calories && typeof reqBody.food.calories === "number"){
+      resolve(reqBody)
+    } else {
+      reject({error: "Invalid request format"})
+    }
   })
-};
+}
 
 module.exports = router;
