@@ -6,11 +6,12 @@ This is a calorie tracker application written as a pair project in Module 4 of t
 ## How to Use ## 
 
 ## Food Items API endpoints ##
-<details>
-  <summary>Available endpoints for Food CRUD actions</summary>
   
 ### Get all Food items in the database ###
-**GET /api/v1/foods:** 
+   **GET /api/v1/foods:** 
+
+<details>
+  <summary>See example</summary>
 
 Example Request: 
 ```
@@ -38,10 +39,15 @@ body:
   },
 ]
 ```
+</details>
+
 
 ### Get one Food Item ###
 
 **GET /api/v1/foods/:id** 
+
+<details>
+  <summary>See example</summary>
 
 Example request:
 ```
@@ -60,10 +66,14 @@ body:
     "calories": 150
 }
 ```
+</details>
+
 
 ### Create a New Food Item ###
 
 **POST /api/v1/foods** 
+<details>
+  <summary>See example</summary>
 
 When a visitor makes a post request to /api/v1/foods with a food item info in the request body, it creates a new Food item and saves it to the database. The response status is 201. 
 
@@ -92,13 +102,17 @@ body:
     "name": "Apple",
     "calories": 40
 }
-
-
 ```
+</details>
+
+
+
 
 ### Update a Food Item ###
 
 **PATCH /api/v1/foods/:id**
+<details>
+  <summary>See example</summary>
 
 When a visitor makes a patch request to /api/v1/foods/:id with the food item info in the request's body, and that food item exists in the database, it updates the respective food item with the new information. 
 
@@ -130,13 +144,18 @@ body:
     "calories": 40
 }
 ```
+</details>
+
 
 ### Update a Food Item ###
 
 **DELETE /api/v1/foods/:id**
+<details>
+  <summary>More info </summary>
 
 When a visitor makes a delete call to api/v1/foods/:id, they get a 204 status code and the Food is deleted. There is no body in the response.
 </details>
+
 
 
 
