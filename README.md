@@ -6,6 +6,9 @@ This is a calorie tracker application written as a pair project in Module 4 of t
 ## How to Use ## 
 
 ## Food Items API endpoints ##
+<details>
+  <summary>Available endpoints for Food CRUD actions</summary>
+  
 ### Get all Food items in the database ###
 **GET /api/v1/foods:** 
 
@@ -133,6 +136,7 @@ body:
 **DELETE /api/v1/foods/:id**
 
 When a visitor makes a delete call to api/v1/foods/:id, they get a 204 status code and the Food is deleted. There is no body in the response.
+</details>
 
 
 
