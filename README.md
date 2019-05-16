@@ -173,9 +173,12 @@ When a visitor makes a delete call to api/v1/foods/:id, they get a 204 status co
 
 ### Get all Meals ###
 **GET /api/v1/meals**
+
 <details>
   <summary>See example response</summary>
+  
   Example response:
+  
 ```
 status: 200
 body:
