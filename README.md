@@ -1,7 +1,7 @@
 # Calorie Tracker
 
 ## Introduction ##
-This is a calorie tracker microservice application written as a pair project in Module 4 of the Turing School of Software Engineering and Desgin. Using this service, our front end application could create Food and Meal items to track their calorie intake. It is deployed in https://safe-tor-35013.herokuapp.com
+This is a calorie tracker microservice application written as a pair project in Module 4 of the Turing School of Software Engineering and Desgin. Using this service, our front end application could create Food and Meal items to track calorie intake. It is deployed in https://safe-tor-35013.herokuapp.com
 ## Initial Setup ## 
 
 ```
@@ -15,7 +15,7 @@ $ npx sequelize db:seed:all
 
 ## How to Use ## 
 
-With this application, you have access to different endpoints
+With this application, you have access to different endpoints for the Food and Meal resources that provide CRUD actions that your frontend could then use. For example, you could add a Food item to your database by having a POST request to api/v1/foods with the food information in the body. 
 
 ## Food Items API endpoints ##
   
@@ -159,7 +159,7 @@ body:
 </details>
 
 
-### Update a Food Item ###
+### Delete a Food Item ###
 
 **DELETE /api/v1/foods/:id**
 <details>
@@ -169,12 +169,182 @@ When a visitor makes a delete call to api/v1/foods/:id, they get a 204 status co
 </details>
 
 
+## Meal Items API endpoints ##
+
+### Get all Meals ###
+**GET /api/v1/meals**
+<details>
+  <summary>See example response</summary>
+  Example response:
+```
+status: 200
+body:
+[
+    {
+        "id": 1,
+        "name": "Breakfast",
+        "foods": [
+            {
+                "id": 1,
+                "name": "Banana",
+                "calories": 150
+            },
+            {
+                "id": 6,
+                "name": "Yogurt",
+                "calories": 550
+            },
+            {
+                "id": 12,
+                "name": "Apple",
+                "calories": 220
+            }
+        ]
+    },
+    {
+        "id": 2,
+        "name": "Snack",
+        "foods": [
+            {
+                "id": 1,
+                "name": "Banana",
+                "calories": 150
+            },
+            {
+                "id": 9,
+                "name": "Gum",
+                "calories": 50
+            },
+            {
+                "id": 10,
+                "name": "Cheese",
+                "calories": 400
+            }
+        ]
+    },
+    {
+        "id": 3,
+        "name": "Lunch",
+        "foods": [
+            {
+                "id": 2,
+                "name": "Bagel Bites - Four Cheese",
+                "calories": 650
+            },
+            {
+                "id": 3,
+                "name": "Chicken Burrito",
+                "calories": 800
+            },
+            {
+                "id": 12,
+                "name": "Apple",
+                "calories": 220
+            }
+        ]
+    },
+    {
+        "id": 4,
+        "name": "Dinner",
+        "foods": [
+            {
+                "id": 1,
+                "name": "Banana",
+                "calories": 150
+            },
+            {
+                "id": 2,
+                "name": "Bagel Bites - Four Cheese",
+                "calories": 650
+            },
+            {
+                "id": 3,
+                "name": "Chicken Burrito",
+                "calories": 800
+            }
+        ]
+    }
+]
+```
+</details>
 
 
+### Get all Food items associated with a specific meal ###
+**GET /api/v1/meals/:meal_id/foods**
 
-## Known Issues ## 
+<details>
+  <summary>See example response</summary>
+
+Example response:
+```
+status: 200
+body: 
+{
+    "id": 1,
+    "name": "Breakfast",
+    "foods": [
+        {
+            "id": 1,
+            "name": "Banana",
+            "calories": 150
+        },
+        {
+            "id": 6,
+            "name": "Yogurt",
+            "calories": 550
+        },
+        {
+            "id": 12,
+            "name": "Apple",
+            "calories": 220
+        }
+    ]
+}
+```
+</details>
+
+### Add a Food item to a Meal ###
+**GET /api/v1/meals/:meal_id/foods/:id**
+
+<details>
+  <summary>See example</summary>
+
+Example request:
+```
+POST /api/v1/meals/3/foods/1
+Content-Type: application/json
+Accept: application/json
+```
+
+Example response:
+```
+status: 201
+body: 
+{
+    "message": "Successfully added FOODNAME to MEALNAME"
+}
+```
+</details>
+
+### Delete a Food item to a Meal ###
+**DELETE /api/v1/meals/:meal_id/foods/:id**
+
+This deletes the Food from that Meal and returns a 204 status
+
+
 ## Running Tests ## 
-## How to Contribute ## 
+To run the tests:
+```
+npm test
+```
+
 ## Core Contributors ## 
+[Tim Allen](https://github.com/timnallen) and [Teresa Knowles](https://github.com/teresa-m-knowles)
 ## Schema Design ##
+![Database schema](/schema.png)
 ## Tech Stack List ## 
+- Node.js
+- Express
+- Sequelize
+- PostgreSQL
+
