@@ -1,9 +1,21 @@
 # Calorie Tracker
 
 ## Introduction ##
-This is a calorie tracker application written as a pair project in Module 4 of the Turing School of Software Engineering and Desgin. 
+This is a calorie tracker microservice application written as a pair project in Module 4 of the Turing School of Software Engineering and Desgin. Using this service, our front end application could create Food and Meal items to track their calorie intake. It is deployed in https://safe-tor-35013.herokuapp.com
 ## Initial Setup ## 
+
+```
+$ git clone git@github.com/teresa-m-knowles/calorie-tracker.git
+$ cd calorie-tracker
+$ npm install 
+$ npx sequelize db:create
+$ npx sequelize db:migrate
+$ npx sequelize db:seed:all 
+```
+
 ## How to Use ## 
+
+With this application, you have access to different endpoints
 
 ## Food Items API endpoints ##
   
